@@ -12,8 +12,13 @@ namespace Day6
         public Orbit(string name, long distanceFromCom)
         {
             Name = name;
-            this._distanceFromCom = distanceFromCom;
+            _distanceFromCom = distanceFromCom;
             _subOrbitList = new List<Orbit>();
+        }
+
+        public static Orbit CreateComOrbit()
+        {
+            return new Orbit("COM", 0);
         }
         
         public void AddOrbit(string parentName, string orbitName)
@@ -34,6 +39,18 @@ namespace Day6
         public long CalculateOrbit()
         {
             return _distanceFromCom + _subOrbitList.Sum(orbit => orbit.CalculateOrbit());
+        }
+
+        public List<string> FindOrbit(string searchPattern)
+        {
+            if (Name==searchPattern) return new List<string>(new[]{Name});
+            foreach (var list in _subOrbitList.Select(orbit => orbit.FindOrbit(searchPattern)).Where(list => list != null))
+            {
+                list.Add(Name);
+                return list;
+            }
+
+            return null;
         }
     }
 }

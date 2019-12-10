@@ -7,6 +7,7 @@
       <e p="Day6.sln" t="IncludeFlat" />
       <e p="day6orbits.txt" t="Include" />
       <e p="exampleOrbits.txt" t="Include" />
+      <e p="exampleOrbits2.txt" t="Include" />
       <e p="obj" t="ExcludeRecursive">
         <e p="Debug" t="Include">
           <e p="netcoreapp3.0" t="Include">
