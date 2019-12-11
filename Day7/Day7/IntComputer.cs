@@ -7,6 +7,7 @@ namespace Day7
     {
         private readonly long[] _intComputer;
         private long _outputValue;
+        public IResultSink Connector { get; set; }
 
         public IntComputer(long[] intComputer)
         {
@@ -54,7 +55,7 @@ namespace Day7
             return Run(new IntComputerInput(input), debug);
         }
 
-        private long Run(IntComputerInput input, bool debug=false)
+        public long Run(IntComputerInput input, bool debug=false)
         {
             long position = 0;
             if (debug) Console.WriteLine("Position: " + position + " Computer: " + string.Join(",", _intComputer));
@@ -85,6 +86,7 @@ namespace Day7
                     case 4:
                         _outputValue = GetOperand(modes[0], position++);
                         if (debug) Console.WriteLine("instruction is output, value now: " + _outputValue);
+                        Connector?.AddValue(_outputValue);
                         break;
                     case 5:
                         if (debug) Console.WriteLine("instruction is jump-if-true (non-zero)");
@@ -166,6 +168,11 @@ namespace Day7
             }
 
             return modeArray;
+        }
+
+        public long GetOutput()
+        {
+            return _outputValue;
         }
     }
 }

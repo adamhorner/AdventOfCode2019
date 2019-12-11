@@ -1,28 +1,57 @@
+using System;
+using System.Collections.Generic;
+using System.Threading;
+
 namespace Day7
 {
-    internal class IntComputerInput
+    public class IntComputerInput : IResultSink
     {
-        private long[] _input;
-        private long _pointer = 0;
+        private List<long> _input;
+        private int _pointer = 0;
+        long _blockedCount = 0;
 
+        #region Constructors
         public IntComputerInput(long[] input)
         {
-            _input = input;
+            _input = new List<long>(input);
         }
 
-        public IntComputerInput()
+        public IntComputerInput() : this(0)
         {
-            _input = new long[] {0};
         }
 
         public IntComputerInput(long value)
         {
-            _input = new long[] {value};
+            _input = new List<long>();
+            _input.Add(value);
         }
+        #endregion
 
+        #region Methods
         public long GetNextInput()
         {
-            return _pointer == (_input.Length-1) ? _input[_pointer] : _input[_pointer++];
+            if (_pointer > _input.Count)
+            {
+                throw new InvalidOperationException("pointer greater than input array size");
+            }
+
+            while (_pointer == _input.Count)
+            {
+                if (++_blockedCount == 10000)//long.MaxValue)
+                {
+                    Console.WriteLine("Blocked waiting for input.");
+                    throw new Exception("Blocked waiting for input for too many cycles");
+                }
+                Thread.Yield();
+            }
+            return _input[_pointer++];
         }
+
+        public void AddValue(long input)
+        {
+            _input.Add(input);
+            _blockedCount = 0;
+        }
+        #endregion
     }
 }

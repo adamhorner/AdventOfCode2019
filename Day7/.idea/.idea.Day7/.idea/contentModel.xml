@@ -13,6 +13,7 @@
         <e p="Day7.csproj" t="IncludeRecursive" />
         <e p="IntComputer.cs" t="Include" />
         <e p="IntComputerInput.cs" t="Include" />
+        <e p="IResultSink.cs" t="Include" />
         <e p="obj" t="ExcludeRecursive">
           <e p="Debug" t="Include">
             <e p="netcoreapp3.0" t="Include">
