@@ -94,11 +94,17 @@ namespace Day9
             */
             
             //Day 9
-            var computer = new IntComputer(Day9Program);
+            var computer = new IntComputer((long[])Day9Program.Clone());
             var input = new IntComputerInput(1);
             computer.Connector = new OutputPrinter();
             computer.Run(input);
             Console.WriteLine($"Day 9 part 1 final output: {computer.GetOutput()}");
+            
+            var computer2 = new IntComputer((long[])Day9Program.Clone());
+            var input2 = new IntComputerInput(2);
+            computer2.Connector = new OutputPrinter();
+            computer2.Run(input2);
+            Console.WriteLine($"Day 9 part 2 final output: {computer2.GetOutput()}");
         }
 
         class OutputPrinter : IResultSink
