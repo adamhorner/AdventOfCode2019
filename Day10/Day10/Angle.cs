@@ -2,16 +2,14 @@ namespace Day10
 {
     public class Angle
     {
-        public double Radians { get; }
-        public bool IsXPositive { get; }
+        public double Degrees { get; }
 
-        public Angle(double radians, bool isXPositive)
+        public Angle(double degrees)
         {
-            Radians = radians;
-            IsXPositive = isXPositive;
+            Degrees = degrees;
         }
 
-        public override bool Equals(object? obj)
+        public override bool Equals(object obj)
         {
             //Check for null and compare run-time types.
             if ((obj == null) || ! this.GetType().Equals(obj.GetType())) 
@@ -20,18 +18,19 @@ namespace Day10
             }
             else { 
                 var other = (Angle) obj;
-                return IsXPositive == other.IsXPositive && Radians.Equals(other.Radians);
+                return Degrees.Equals(other.Degrees);
             }   
         }
 
         public override int GetHashCode()
         {
-            return (Radians.GetHashCode() << 2) ^ (IsXPositive?1:0);
+            return Degrees.GetHashCode();
         }
 
         public override string ToString()
         {
-            return "X" + (IsXPositive ? "+" : "-") + "ve, Radians: " + Radians;
+            return "Degrees: " + Degrees;
         }
+
     }
 }

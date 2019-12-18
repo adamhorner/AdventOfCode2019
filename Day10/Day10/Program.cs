@@ -5,9 +5,9 @@ using System.Linq;
 
 namespace Day10
 {
-    class Program
+    static class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             CalculateAsteroidMapFromFile("exampleMap1");
             CalculateAsteroidMapFromFile("bigExampleMap1");
@@ -35,6 +35,15 @@ namespace Day10
             }
 
             Console.WriteLine($"{fileNameRoot}: Maximum visible asteroids is {maxAst.GetVisibleAsteroidCount()} from {maxAst.X},{maxAst.Y}");
+
+            var (angle, explodedAsteroid) = maxAst.FireLaser();
+            var count = 0;
+            while (angle >= 0)
+            {
+               Console.WriteLine($"Vaporised asteroid number {++count} at position {explodedAsteroid.X},{explodedAsteroid.Y} at angle {angle}");
+               (angle, explodedAsteroid) = maxAst.FireLaser();
+            }
+            Console.WriteLine($"Asteroid cleared from {maxAst.X},{maxAst.Y} for map {fileNameRoot}\n");
         }
 
         private static List<Asteroid> ReadAsteroidFieldFromFile(string filename)
