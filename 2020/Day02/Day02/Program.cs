@@ -1,22 +1,23 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 
 namespace Day02
 {
-    class Program
+    internal static class Program
     {
-        const string testPasswords = "/Users/adam/Development/Personal/AdventOfCode/2020/Day02/test.txt";
-        const string puzzlePasswords = "/Users/adam/Development/Personal/AdventOfCode/2020/Day02/input.txt";
+        private const string TestPasswords = "/Users/adam/Development/Personal/AdventOfCode/2020/Day02/test.txt";
+        private const string PuzzlePasswords = "/Users/adam/Development/Personal/AdventOfCode/2020/Day02/input.txt";
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            Console.WriteLine("Test Valid Passwords: " + CountValidPasswords(GetAllPasswordsFromFile(testPasswords)));
-            Console.WriteLine("Test Puzzle Passwords: " + CountValidPasswords(GetAllPasswordsFromFile(puzzlePasswords)));
+            Console.WriteLine("Test Valid Passwords: " + CountValidPasswords(GetAllPasswordsFromFile(TestPasswords)));
+            Console.WriteLine("Test Puzzle Passwords: " + CountValidPasswords(GetAllPasswordsFromFile(PuzzlePasswords)));
         }
 
-        static Collection<PasswordSet> GetAllPasswordsFromFile(string filename)
+        private static IEnumerable<PasswordSet> GetAllPasswordsFromFile(string filename)
         {
             var passwordCollection = new Collection<PasswordSet>();
             foreach (var passwordString in File.ReadAllLines(filename))
@@ -29,8 +30,8 @@ namespace Day02
                     MinOccurs = int.Parse(passwordString.Substring(0, hyphenLocation)),
                     MaxOccurs = int.Parse(passwordString.Substring(hyphenLocation + 1,
                         spaceLocation - hyphenLocation - 1)),
-                    requiredChar = passwordString[spaceLocation + 1],
-                    password = passwordString.Substring(colonLocation + 2)
+                    RequiredChar = passwordString[spaceLocation + 1],
+                    Password = passwordString.Substring(colonLocation + 2)
                 };
                 passwordCollection.Add(passwordSet);
             }
@@ -38,17 +39,21 @@ namespace Day02
             return passwordCollection;
         }
 
-        static int CountValidPasswords(Collection<PasswordSet> collection)
+        private static int CountValidPasswords(IEnumerable<PasswordSet> collection)
         {
-            return (from passwordSet in collection let countChars = passwordSet.password.Count(x => x == passwordSet.requiredChar) where countChars >= passwordSet.MinOccurs && countChars <= passwordSet.MaxOccurs select passwordSet).Count();
+            return (
+                from passwordSet in collection
+                let countChars = passwordSet.Password.Count(x => x == passwordSet.RequiredChar)
+                where countChars >= passwordSet.MinOccurs && countChars <= passwordSet.MaxOccurs
+                select passwordSet).Count();
         }
     }
 
-    class PasswordSet
+    internal class PasswordSet
     {
         public int MinOccurs { get; set; }
         public int MaxOccurs { get; set; }
-        public char requiredChar { get; set; }
-        public string password { get; set; }
+        public char RequiredChar { get; set; }
+        public string Password { get; set; }
     }
 }
