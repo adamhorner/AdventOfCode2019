@@ -13,8 +13,10 @@ namespace Day02
 
         private static void Main(string[] args)
         {
-            Console.WriteLine("Test Valid Passwords: " + CountValidPasswords(GetAllPasswordsFromFile(TestPasswords)));
-            Console.WriteLine("Test Puzzle Passwords: " + CountValidPasswords(GetAllPasswordsFromFile(PuzzlePasswords)));
+            Console.WriteLine("Test Valid1 Passwords: " + CountValidPasswordsPart1(GetAllPasswordsFromFile(TestPasswords)));
+            Console.WriteLine("Test Valid2 Passwords: " + CountValidPasswordsPart2(GetAllPasswordsFromFile(TestPasswords)));
+            Console.WriteLine("Test Puzzle1 Passwords: " + CountValidPasswordsPart1(GetAllPasswordsFromFile(PuzzlePasswords)));
+            Console.WriteLine("Test Puzzle2 Passwords: " + CountValidPasswordsPart2(GetAllPasswordsFromFile(PuzzlePasswords)));
         }
 
         private static IEnumerable<PasswordSet> GetAllPasswordsFromFile(string filename)
@@ -39,12 +41,21 @@ namespace Day02
             return passwordCollection;
         }
 
-        private static int CountValidPasswords(IEnumerable<PasswordSet> collection)
+        private static int CountValidPasswordsPart1(IEnumerable<PasswordSet> collection)
         {
             return (
                 from passwordSet in collection
                 let countChars = passwordSet.Password.Count(x => x == passwordSet.RequiredChar)
                 where countChars >= passwordSet.MinOccurs && countChars <= passwordSet.MaxOccurs
+                select passwordSet).Count();
+        }
+
+        private static int CountValidPasswordsPart2(IEnumerable<PasswordSet> collection)
+        {
+            return (
+                from passwordSet in collection
+                where passwordSet.Password[passwordSet.MinOccurs-1] == passwordSet.RequiredChar ^
+                      passwordSet.Password[passwordSet.MaxOccurs-1] == passwordSet.RequiredChar
                 select passwordSet).Count();
         }
     }
