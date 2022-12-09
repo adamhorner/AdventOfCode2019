@@ -40,47 +40,63 @@ struct Point: Hashable, Equatable, CustomStringConvertible {
 }
 
 class Rope: CustomStringConvertible {
-    var head = Point()
-    var tail = Point()
+    var ropePoints: [Point]
     var tailHistory: Set = [Point()]
+    var head: Point {
+        return ropePoints[0]
+    }
+    var tail: Point {
+        return ropePoints[ropePoints.count-1]
+    }
+
+    init(ropeSize: Int) {
+        assert(ropeSize >= 2)
+        ropePoints = []
+        for _ in 0..<ropeSize {
+            ropePoints.append(Point())
+        }
+    }
     
     public var description: String {
-        return "Rope with head: \(head), and tail: \(tail). TailHistory: \(tailHistory)"
+        return "Rope with points: \(ropePoints).\n TailHistory: \(tailHistory)"
     }
     
     func moveHead(up: Bool) {
         let newY = head.y + (up ? 1 : -1)
-        head = Point(x: head.x, y: newY)
+        ropePoints[0] = Point(x: head.x, y: newY)
         moveTail()
     }
     
     func moveHead(right: Bool) {
         let newX = head.x + (right ? 1 : -1)
-        head = Point(x: newX, y: head.y)
+        ropePoints[0] = Point(x: newX, y: head.y)
         moveTail()
     }
     
     private func moveTail() {
-        if head == tail {
-            return
+        for i in 1..<ropePoints.count {
+            let previousKnot = ropePoints[i-1]
+            let currentKnot = ropePoints[i]
+            if previousKnot != currentKnot {
+                var newX = currentKnot.x
+                var newY = currentKnot.y
+                if currentKnot.x < previousKnot.x-1 {
+                    newX = previousKnot.x - 1
+                    newY = previousKnot.y
+                } else if currentKnot.x > previousKnot.x+1 {
+                    newX = previousKnot.x + 1
+                    newY = previousKnot.y
+                }
+                if currentKnot.y < previousKnot.y-1 {
+                    newX = previousKnot.x
+                    newY = previousKnot.y - 1
+                } else if currentKnot.y > previousKnot.y+1 {
+                    newX = previousKnot.x
+                    newY = previousKnot.y + 1
+                }
+                ropePoints[i] = Point(x: newX, y: newY)
+            }
         }
-        var newX = tail.x
-        var newY = tail.y
-        if tail.x < head.x-1 {
-            newX = head.x - 1
-            newY = head.y
-        } else if tail.x > head.x+1 {
-            newX = head.x + 1
-            newY = head.y
-        }
-        if tail.y < head.y-1 {
-            newX = head.x
-            newY = head.y - 1
-        } else if tail.y > head.y+1 {
-            newX = head.x
-            newY = head.y + 1
-        }
-        tail = Point(x: newX, y: newY)
         //add tail to history
         tailHistory.insert(tail)
     }
@@ -88,26 +104,32 @@ class Rope: CustomStringConvertible {
 
 //MARK: - Main loop
 
-let rope = Rope()
 let lines = inputText.split(separator: "\n")
-print(rope)
-for line in lines {
-    let components = line.split(separator: " ")
-    let distance = Int(components[1])!
-    print("executing movement \(line)")
-    for _ in 1...distance {
-        let command = components[0]
-        switch command {
-        case "U", "D":
-            rope.moveHead(up: command == "U")
-        case "L", "R":
-            rope.moveHead(right: command == "R")
-        default:
-            fatalError("Unexpected Command \(command)")
+
+func simulateRope(size: Int) -> Int {
+    let rope = Rope(ropeSize: size)
+    for line in lines {
+        let components = line.split(separator: " ")
+        let distance = Int(components[1])!
+        //print("executing movement \(line)")
+        for _ in 1...distance {
+            let command = components[0]
+            switch command {
+            case "U", "D":
+                rope.moveHead(up: command == "U")
+            case "L", "R":
+                rope.moveHead(right: command == "R")
+            default:
+                fatalError("Unexpected Command \(command)")
+            }
+            //print(rope)
+            //print(rope.tailHistory.count)
         }
-        //print(rope)
-        //print(rope.tailHistory.count)
     }
+    //print(rope)
+    return rope.tailHistory.count
 }
 
-print("Tail has covered \(rope.tailHistory.count) points")
+for i in 2...30 {
+    print("Rope tail for rope of size \(i) covers \(simulateRope(size: i)) points")
+}
