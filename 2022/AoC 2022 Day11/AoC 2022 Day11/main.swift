@@ -11,10 +11,10 @@ import Foundation
 
 struct Item: CustomStringConvertible {
     var description: String {
-        return String(WorryLevel)
+        return String(worryLevel)
     }
     
-    var WorryLevel: Int
+    var worryLevel: BigInt
 }
 
 enum WorryOperation: CustomStringConvertible {
@@ -36,7 +36,7 @@ enum WorryOperation: CustomStringConvertible {
 struct Monkey {
     var items: [Item] = []
     var worryOperation: WorryOperation?
-    var throwTestDivisor: Int = 0
+    var throwTestDivisor: BigInt = 0
     var throwTestTrueMonkey: Int = -1
     var throwTestFalseMonkey: Int = -1
     var itemInspections: Int = 0
@@ -44,24 +44,35 @@ struct Monkey {
         items.append(item)
     }
     mutating func throwItem() -> (monkeyNumber: Int, item: Item) {
-        var itemWorry = items.removeFirst().WorryLevel
+        var itemWorry = items.removeFirst().worryLevel
         switch worryOperation {
         case .Addition(let of):
-            itemWorry += of
+            itemWorry += BigInt(of)
         case .Multiplication(let by):
-            itemWorry *= by
+            itemWorry *= BigInt(by)
         case .Squared:
             itemWorry = itemWorry * itemWorry
         case nil:
             preconditionFailure("No worryOperation, failed to throw item")
         }
-        itemWorry /= 3
+        // WARNING: This line was commented out to change from part 1 to part 2 logic
+        //itemWorry /= 3
         itemInspections += 1
-        let newItem = Item(WorryLevel: itemWorry)
+        let newItem = Item(worryLevel: itemWorry)
         if itemWorry % throwTestDivisor == 0 {
             return (throwTestTrueMonkey, newItem)
         } else {
             return (throwTestFalseMonkey, newItem)
+        }
+    }
+
+    func isAllItemWorryLevelsGreaterThan(value: BigInt) -> Bool {
+        return items.map{$0.worryLevel>value}.reduce(true){$0 && $1}
+    }
+    
+    mutating func moduloAllWorryLevels(by value: BigInt) {
+        for i in 0..<items.count {
+            items[i] = Item(worryLevel: items[i].worryLevel % value)
         }
     }
 }
@@ -82,7 +93,7 @@ func parseMonkeys(lines: [String]) -> [Monkey] {
         if line == "" {
             //printMonkeyGroup(group: monkeys)
         } else {
-            var words = line.split(separator: " ")
+            let words = line.split(separator: " ")
             switch words[0] {
             case "Monkey":
                 monkeyCounter += 1
@@ -90,7 +101,7 @@ func parseMonkeys(lines: [String]) -> [Monkey] {
                 monkeys.append(Monkey())
             case "Starting":
                 for itemWorryLevel in line.components(separatedBy: ": ")[1].components(separatedBy: ", ") {
-                    monkeys[monkeyCounter].doCatch(item: Item(WorryLevel: Int(itemWorryLevel)!))
+                    monkeys[monkeyCounter].doCatch(item: Item(worryLevel: BigInt(itemWorryLevel)!))
                 }
             case "Operation:":
                 switch words[4] {
@@ -106,7 +117,7 @@ func parseMonkeys(lines: [String]) -> [Monkey] {
                     assertionFailure("Operation Not Supported: \(line)")
                 }
             case "Test:":
-                monkeys[monkeyCounter].throwTestDivisor = Int(words[3])!
+                monkeys[monkeyCounter].throwTestDivisor = BigInt(String(words[3]))!
             case "If":
                 if words[1] == "true:" {
                     monkeys[monkeyCounter].throwTestTrueMonkey = Int(words[5])!
@@ -135,6 +146,7 @@ func printMonkeyInspections(group: [Monkey]) {
     var i = 0
     for monkey in group {
         print("Monkey \(i) inspected items \(monkey.itemInspections) times")
+        i += 1
     }
 }
 
@@ -145,27 +157,38 @@ let testfile = "/Users/adam/Development/Personal/AdventOfCode/2022/day11-test.tx
 var monkeys: [Monkey]
 
 do {
-    monkeys = try parseMonkeys(lines: getLines(from: testfile))
+    monkeys = try parseMonkeys(lines: getLines(from: datafile))
 } catch {
     print("Couldn't read text file \(datafile), exiting")
     exit(1)
 }
 
 printMonkeyGroup(group: monkeys)
-for round in 1...20 {
+// throwTestDivisor doesn't change during loop, otherwise this would have to be calculated just before usage
+let divisorProduct = monkeys.map{$0.throwTestDivisor}.reduce(1){$0*$1}
+
+for round in 1...10000 {
     for i in 0..<monkeys.count {
         for _ in monkeys[i].items {
             let thrownItem = monkeys[i].throwItem()
             monkeys[thrownItem.monkeyNumber].doCatch(item: thrownItem.item)
         }
     }
-    print("After round \(round), the monkeys are holding items with these worry levels:")
-    printMonkeyGroup(group: monkeys)
+    let allItemsBiggerThanDivisorProduct = monkeys.map{$0.isAllItemWorryLevelsGreaterThan(value: divisorProduct)}.reduce(true){$0 && $1}
+    if allItemsBiggerThanDivisorProduct {
+        //print(".", terminator: "")
+        for i in 0..<monkeys.count {
+            monkeys[i].moduloAllWorryLevels(by: divisorProduct)
+        }
+    }
+    if [1,20,1000,2000,3000,4000,5000,6000,7000,8000,9000,10000].contains(round) {
+        print("\n== After round \(round) ==")
+        //print("The monkeys are holding items with these worry levels:")
+        //printMonkeyGroup(group: monkeys)
+        printMonkeyInspections(group: monkeys)
+        let monkeyInspections = monkeys.map{$0.itemInspections}.sorted().reversed()
+        let monkeyBusinessLevel = (monkeyInspections.first ?? 0) * (monkeyInspections.dropFirst().first ?? 0)
+        print ("Monkey Business Level: \(monkeyBusinessLevel)")
+    }
 }
-printMonkeyInspections(group: monkeys)
-let monkeyInspections = monkeys.map{$0.itemInspections}.sorted().reversed()
-let monkeyBusinessLevel = (monkeyInspections.first ?? 0) * (monkeyInspections.dropFirst().first ?? 0)
-print ("Part 1: MonkeyBusinessLevel = \(monkeyBusinessLevel)")
 
-
-//let monkeys = parseMonkeys(lines: getLines(from: datafile))

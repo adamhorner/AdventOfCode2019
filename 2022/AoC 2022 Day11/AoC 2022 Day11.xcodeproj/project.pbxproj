@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		666BFDA62946A0CF0063045A /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666BFDA52946A0CF0063045A /* main.swift */; };
+		666BFDAE2946CD170063045A /* BigInt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 666BFDAD2946CD170063045A /* BigInt.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +26,7 @@
 /* Begin PBXFileReference section */
 		666BFDA22946A0CF0063045A /* AoC 2022 Day11 */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "AoC 2022 Day11"; sourceTree = BUILT_PRODUCTS_DIR; };
 		666BFDA52946A0CF0063045A /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		666BFDAD2946CD170063045A /* BigInt.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BigInt.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +59,7 @@
 		666BFDA42946A0CF0063045A /* AoC 2022 Day11 */ = {
 			isa = PBXGroup;
 			children = (
+				666BFDAD2946CD170063045A /* BigInt.swift */,
 				666BFDA52946A0CF0063045A /* main.swift */,
 			);
 			path = "AoC 2022 Day11";
@@ -132,7 +135,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nTAGS=\"TODO:|FIXME:\"\nERRORTAG=\"ERROR:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" -type f \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$|($ERRORTAG).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\" | perl -p -e \"s/($ERRORTAG)/ error: \\$1/\"\n";
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nTAGS=\"TODO:|FIXME:|WARNING:\"\nERRORTAG=\"ERROR:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" -type f \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$|($ERRORTAG).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\" | perl -p -e \"s/($ERRORTAG)/ error: \\$1/\"\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -141,6 +144,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				666BFDAE2946CD170063045A /* BigInt.swift in Sources */,
 				666BFDA62946A0CF0063045A /* main.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
