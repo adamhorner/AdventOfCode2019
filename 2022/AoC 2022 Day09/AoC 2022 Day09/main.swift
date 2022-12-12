@@ -94,6 +94,19 @@ class Rope: CustomStringConvertible {
                     newX = previousKnot.x
                     newY = previousKnot.y + 1
                 }
+                if currentKnot.x < previousKnot.x-1 && currentKnot.y < previousKnot.y-1 {
+                    newX = previousKnot.x - 1
+                    newY = previousKnot.y - 1
+                } else if currentKnot.x < previousKnot.x-1 && currentKnot.y > previousKnot.y+1 {
+                    newX = previousKnot.x - 1
+                    newY = previousKnot.y + 1
+                } else if currentKnot.x > previousKnot.x+1 && currentKnot.y < previousKnot.y-1 {
+                    newX = previousKnot.x + 1
+                    newY = previousKnot.y - 1
+                } else if currentKnot.x > previousKnot.x+1 && currentKnot.y > previousKnot.y+1 {
+                    newX = previousKnot.x + 1
+                    newY = previousKnot.y + 1
+                }
                 ropePoints[i] = Point(x: newX, y: newY)
             }
         }
@@ -130,6 +143,6 @@ func simulateRope(size: Int) -> Int {
     return rope.tailHistory.count
 }
 
-for i in 2...30 {
+for i in [2,10] {
     print("Rope tail for rope of size \(i) covers \(simulateRope(size: i)) points")
 }
