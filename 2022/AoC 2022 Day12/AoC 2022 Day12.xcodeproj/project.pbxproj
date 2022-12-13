@@ -69,6 +69,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 666BFDBF294739B40063045A /* Build configuration list for PBXNativeTarget "AoC 2022 Day12" */;
 			buildPhases = (
+				666BFDC2294739BC0063045A /* ShellScript */,
 				666BFDB4294739B40063045A /* Sources */,
 				666BFDB5294739B40063045A /* Frameworks */,
 				666BFDB6294739B40063045A /* CopyFiles */,
@@ -114,6 +115,26 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		666BFDC2294739BC0063045A /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Type a script or drag a script file from your workspace to insert its path.\nTAGS=\"TODO:|FIXME:|WARNING:\"\nERRORTAG=\"ERROR:|BROKEN:\"\nfind \"${SRCROOT}\" \\( -name \"*.h\" -or -name \"*.m\" -or -name \"*.swift\" -type f \\) -print0 | xargs -0 egrep --with-filename --line-number --only-matching \"($TAGS).*\\$|($ERRORTAG).*\\$\" | perl -p -e \"s/($TAGS)/ warning: \\$1/\" | perl -p -e \"s/($ERRORTAG)/ error: \\$1/\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		666BFDB4294739B40063045A /* Sources */ = {
