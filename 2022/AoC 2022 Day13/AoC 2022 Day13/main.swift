@@ -145,8 +145,16 @@ func parsePairs(file: String) throws -> [PacketPair] {
             lastPacket = nil
         }
     }
-    print(packetPairs.count)
+    //print(packetPairs.count)
     return packetPairs
+}
+
+func createProtocolPacket(value: Int) -> PuzzlePacket {
+    var protocolPacket = PuzzlePacket()
+    var innerList = PuzzlePacket()
+    innerList.addToList(value)
+    protocolPacket.addToList(innerList)
+    return protocolPacket
 }
 
 //MARK: - Main Loop
@@ -155,6 +163,11 @@ let testFile = "/Users/adam/Development/Personal/AdventOfCode/2022/day13-test.tx
 let dataFile = "/Users/adam/Development/Personal/AdventOfCode/2022/day13-data.txt"
 
 var packetPairs = try! parsePairs(file: dataFile)
+
+var allPackets: [PuzzlePacket] = []
+
+allPackets.append(createProtocolPacket(value: 2))
+allPackets.append(createProtocolPacket(value: 6))
 
 var index = 0
 var accumulator = 0
@@ -167,5 +180,11 @@ for pair in packetPairs {
     } else {
         //print("packets are not in order")
     }
+    allPackets.append(pair.left)
+    allPackets.append(pair.right)
 }
 print("Part 1: sum of indexes in order is: \(accumulator)")
+let allPacketsSorted = allPackets.sorted()
+let index1 = Int(allPacketsSorted.firstIndex(of: createProtocolPacket(value: 2))!)+1
+let index2 = Int(allPacketsSorted.firstIndex(of: createProtocolPacket(value: 6))!)+1
+print("Part 2: product of protocol indexes is: \(index1*index2)")
